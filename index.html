@@ -687,7 +687,7 @@
 
                     const previewTextSpan = document.createElement('span');
                     previewTextSpan.className = 'question-list-preview'; // Class for preview text
-                    
+                   
                     // Get the raw problem text
                     let rawProblemText = question.問題文 || (question.問題項目 ? '表形式問題' : '問題文なし');
                     // Remove newlines for a single-line preview
@@ -756,10 +756,9 @@
             domElements.optionsContainer.innerHTML = '';
             domElements.resultDiv.textContent = '';
             domElements.resultDiv.className = 'result';
-            domElements.nextButton.style.display = 'none';
-            domElements.backToPreviousScreenButton.style.display = 'none';
             if (domElements.explanationContainer) domElements.explanationContainer.style.display = 'none'; // 解説は初期状態で非表示
 
+            // プログレスバーと問題数表示の制御
             if (quizState.questionSource === 'random') {
                 domElements.questionCountSpan.textContent = `${quizState.currentQuestionIndex + 1} / ${quizState.questions.length}`;
                 domElements.questionCountSpan.style.display = 'block';
@@ -791,7 +790,6 @@
                 domElements.questionTextDiv.textContent = '問題文の形式が不明です。';
             }
 
-
             const disableOptions = quizState.answered || quizState.questionSource === 'review';
             domElements.optionsContainer.classList.toggle('answered', disableOptions);
 
@@ -814,10 +812,10 @@
 
                         const optionNumberSpan = document.createElement('span');
                         optionNumberSpan.className = 'option-number-label';
-                        
+                       
                         const markerSpan = document.createElement('span');
                         markerSpan.className = 'option-marker-label';
-                        
+                       
                         const textContentSpan = document.createElement('span');
                         textContentSpan.className = 'option-text-content';
 
@@ -843,7 +841,7 @@
                                 textContentSpan.innerHTML = line; // No bold marker, just text
                             }
                         }
-                        
+                       
                         // Append elements to lineContentDiv based on whether they have content
                         if (lineIndex === 0) { // Always add option number for the first line
                             lineContentDiv.appendChild(optionNumberSpan);
@@ -860,7 +858,7 @@
                             placeholderMarkerSpan.className = 'option-marker-label'; // Use the same class for spacing
                             lineContentDiv.appendChild(placeholderMarkerSpan);
                         }
-                        
+                       
                         lineContentDiv.appendChild(textContentSpan);
                         span.appendChild(lineContentDiv);
                     });
@@ -878,6 +876,42 @@
                         input.addEventListener('change', handleOptionSelect);
                     }
                 });
+            }
+
+            // Always show the back button on the quiz screen
+            domElements.backToPreviousScreenButton.style.display = 'block';
+            if (quizState.questionSource === 'random') {
+                // If reviewing from the end screen, the back button should go back to the incorrect list
+                if (quizState.previousScreenContext.mode === 'end' && quizState.previousScreenContext.source === 'random') {
+                    domElements.backToPreviousScreenButton.textContent = '間違えた問題に戻る';
+                } else {
+                    domElements.backToPreviousScreenButton.textContent = 'モード選択に戻る';
+                }
+            } else if (quizState.questionSource === 'year') {
+                domElements.backToPreviousScreenButton.textContent = '問題一覧に戻る';
+            } else if (quizState.questionSource === 'review') { // This is for reviewing incorrect questions from the end screen
+                domElements.backToPreviousScreenButton.textContent = '間違えた問題に戻る';
+            }
+
+            // Next button logic
+            if (disableOptions) {
+                // If already answered or in review mode, show next button only if there's a next question in the sequence
+                if (quizState.questionSource === 'year' && quizState.currentQuestionIndex < quizState.questions.length - 1) {
+                    domElements.nextButton.style.display = 'block';
+                    domElements.nextButton.textContent = '次の問題へ';
+                } else if (quizState.questionSource === 'random' && quizState.currentQuestionIndex < quizState.questions.length - 1) {
+                    domElements.nextButton.style.display = 'block';
+                    domElements.nextButton.textContent = '次の問題へ';
+                } else if (quizState.questionSource === 'random' && quizState.currentQuestionIndex === quizState.questions.length - 1) {
+                    // Last question in random quiz, show "結果を見る"
+                    domElements.nextButton.style.display = 'block';
+                    domElements.nextButton.textContent = '結果を見る';
+                } else {
+                    domElements.nextButton.style.display = 'none'; // No next button if it's the last question in year mode or review mode
+                }
+            } else {
+                // If not yet answered, hide next button until an option is selected
+                domElements.nextButton.style.display = 'none';
             }
 
             if (disableOptions) { // 解答済み、またはレビューモードの場合
@@ -956,17 +990,18 @@
             applyAnswerStylesAndResult(selectedValue, correctAnswer, currentQuestion);
 
             // ボタン表示 (displayQuestion と同じロジック)
-             if (quizState.questionSource === 'random') {
+            if (quizState.questionSource === 'random') {
                 domElements.nextButton.style.display = 'block';
                 domElements.nextButton.textContent = (quizState.currentQuestionIndex < quizState.questions.length - 1) ? '次の問題へ' : '結果を見る';
             } else if (quizState.questionSource === 'year') {
-                domElements.backToPreviousScreenButton.textContent = '問題一覧に戻る';
-                domElements.backToPreviousScreenButton.style.display = 'inline-block';
                 if (quizState.currentQuestionIndex < quizState.questions.length - 1) {
-                    domElements.nextButton.style.display = 'inline-block';
+                    domElements.nextButton.style.display = 'block';
                     domElements.nextButton.textContent = '次の問題へ';
+                } else {
+                    domElements.nextButton.style.display = 'none'; // 最後の問題の場合、「次へ」は不要
                 }
             }
+            // 'review' モードでは「次へ」ボタンは表示されない
         }
 
         function applyAnswerStylesAndResult(selectedValue, correctAnswer, questionObject) {
