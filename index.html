@@ -203,14 +203,15 @@
             text-align: center;
         }
 
-        .mode-button, .year-button, .question-list-item {
+        /* Separated mode-button and year-button styles for specific text color */
+        .mode-button, .year-button {
             display: block;
             width: 100%;
             padding: 1rem;
             margin-bottom: 1rem;
             font-size: 1.25rem;
             font-weight: 600;
-            color: #ffffff;
+            color: #ffffff; /* White text for buttons */
             background-color: #3b82f6; /* blue-500 */
             border-radius: 0.375rem; /* rounded-md */
             cursor: pointer;
@@ -218,7 +219,7 @@
             text-align: center;
         }
 
-        .mode-button:hover, .year-button:hover, .question-list-item:hover {
+        .mode-button:hover, .year-button:hover {
             background-color: #2563eb; /* blue-600 */
         }
 
@@ -255,6 +256,15 @@
             font-weight: bold;
             margin-left: 1rem;
             flex-shrink: 0; /* Prevent shrinking */
+            color: #6B7280; /* Default color for "未回答" (gray-500) */
+        }
+
+        .question-list-item.correct .status-indicator {
+            color: #059669; /* green-600 */
+        }
+
+        .question-list-item.incorrect .status-indicator {
+            color: #dc2626; /* red-600 */
         }
 
         /* New class for emphasized question number */
@@ -443,140 +453,8 @@
 
     <script>
         // グローバルスコープに配置するデータと定数
-        let allQuizData = [
-            {
-                "問題番号": "問1",
-                "年度": "第59回(平成21年)",
-                "問題文": "次の記述は、<b>計量法第1条</b>の目的に関するものであるが、<b>(ア)</b>~<b>(ウ)</b>に入る語句の組合せとして正しいものを一つ選べ。\n\nこの法律は、計量の<b>(ア)</b>を定め、適正な<b>(イ)</b>を確保し、もって<b>(ウ)</b>に寄与することを目的とする。",
-                "選択肢": [
-                    "<b>(ア)</b>標準\n<b>(イ)</b>計量の実施\n<b>(ウ)</b>社会経済の発展及び生活水準の向上",
-                    "<b>(ア)</b>基準\n<b>(イ)</b>計量の実施\n<b>(ウ)</b>経済の発展及び文化の向上",
-                    "<b>(ア)</b>基準\n<b>(イ)</b>計量器の校正\n<b>(ウ)</b>社会経済の発展及び生活水準の向上",
-                    "<b>(ア)</b>基準\n<b>(イ)</b>計量器の供給\n<b>(ウ)</b>経済の発展及び文化の向上",
-                    "<b>(ア)</b>標準\n<b>(イ)</b>計量器の供給\n<b>(ウ)</b>社会経済の発展及び生活水準の向上"
-                ],
-                "正解": "2"
-            },
-            {
-                "問題番号": "問2",
-                "年度": "第59回(平成21年)",
-                "問題文": "計量法の用語の定義に関する次のア~オの記述のうち、誤っているものの組合せを次の1~5の中から一つ選べ。\n\nア この法律において「取引」とは、公に又は業務上他人に一定の事実が真実である旨を表明することをいう。\n\nイ この法律において「計量単位」とは、計量の基準となるものをいう。\n\nウ この法律で定める「物象の状態の量」には、速さは含まれない。\n\nエ この法律において「特定計量器」とは、取引若しくは証明における計量に使用され、又は主として一般消費者の生活の用に供されるすべての計量器をいう。\n\nオ この法律において「標準物質」とは、政令で定める物象の状態の量の特定の値が付された物質であって、当該物象の状態の量の計量をするための計量器の誤差の測定に用いるものをいう。",
-                "選択肢": [
-                    "ア、イ、エ、オ",
-                    "ア、ウ、工",
-                    "ア、ウ、オ",
-                    "イ、エ、オ",
-                    "イ、ウ、工"
-                ],
-                "正解": "2"
-            },
-            {
-                "問題番号": "問3",
-                "年度": "第59回(平成21年)",
-                "問題文": "次の記述は、非法定計量単位の使用の禁止に関する<b>計量法第8条第1項</b>の規定であるが、<b>(ア)</b> 及び <b>(イ)</b>に入る語句の組合せとして正しいものを一つ選べ。\n\n第3条から第5条までに規定する計量単位(以下「法定計量単位」という。)以外の計量単位(以下「非法定計量単位」という。)は、<b>第2条第1項第1号</b>に掲げる物象の状態の量について、<b>(ア)</b> 又は<b>(イ)</b>に用いてはならない。",
-                "選択肢": [
-                    "<b>(ア)</b>計量\n<b>(イ)</b>計測",
-                    "<b>(ア)</b>校正\n<b>(イ)</b>検定",
-                    "<b>(ア)</b>取引\n<b>(イ)</b>証明",
-                    "<b>(ア)</b>報告\n<b>(イ)</b>表示",
-                    "<b>(ア)</b>販売\n<b>(イ)</b>陳列"
-                ],
-                "正解": "3"
-            },
-            {
-                "問題番号": "問4",
-                "年度": "第59回(平成21年)",
-                "問題文": "次のア~オに示す物象の状態の量と法定計量単位との組合せのうち、正しいものがいくつあるか、次の1~5の中から一つ選べ。\nア\n[物象の状態の量]　周波数\n[法定計量単位]　サイクル\n\nイ\n[物象の状態の量]　長さ\n[法定計量単位]　ミクロン\n\nウ\n[物象の状態の量]　質量\n[法定計量単位]　トン\n\nエ\n[物象の状態の量]　力\n[法定計量単位]　重量キログラム\n\nオ\n[物象の状態の量]　体積\n[法定計量単位]　リットル",
-                "選択肢": [
-                    "1個",
-                    "2個",
-                    "3個",
-                    "4個",
-                    "5個"
-                ],
-                "正解": "2"
-            },
-            {
-                "問題番号": "問5",
-                "年度": "第59回(平成21年)",
-                "問題文": "次の記述は、<b>計量法第15条</b>の特定商品の販売の事業を行う者に関するものであるが、<b>(ア)</b>~<b>(ウ)</b> に入る語句の組合せとして正しいものを一つ選べ。\n\n<b>(ア)</b>は、特定商品の販売の事業を行う者が規定を遵守していないため、当該特定商品を購入する者の利益が害されるおそれがあると認めるときは、これらの者に対し、必要な措置をとるべきことを<b>(イ)</b>することができる。\n\n<b>(ア)</b>は、前項の規定による<b>(イ)</b> をした場合において、その<b>(イ)</b>を受けた者がこれに従わなかったときは、その旨を<b>(ウ)</b> することができる。",
-                "選択肢": [
-                    "<b>(ア)</b>経済産業大臣\n<b>(イ)</b>勧告\n<b>(ウ)</b>公表",
-                    "<b>(ア)</b>経済産業大臣\n<b>(イ)</b>勧告\n<b>(ウ)</b>警告",
-                    "<b>(ア)</b>都道府県知事又は特定市町村の長\n<b>(イ)</b>命令\n<b>(ウ)</b>公表",
-                    "<b>(ア)</b>経済産業大臣\n<b>(イ)</b>命令\n<b>(ウ)</b>勧告",
-                    "<b>(ア)</b>都道府県知事又は特定市町村の長\n<b>(イ)</b>勧告\n<b>(ウ)</b>公表"
-                ],
-                "正解": "5"
-            },
-            {
-                "問題番号": "問6",
-                "年度": "第59回(平成21年)",
-                "問題文": "<b>計量法</b>における計量器の使用に関する次の記述のうち、正しいものを一つ選べ。",
-                "選択肢": [
-                    "検定証印が付された特定計量器はすべて、取引又は証明における法定計量単位による計量に使用してよい。",
-                    "特定計量器の中には、取引又は証明における法定計量単位による計量に際し、その使用方法について制限しているものはない。",
-                    "巻尺は特定計量器ではないため、取引又は証明における法定計量単位による計量に使用することはできない。",
-                    "特殊容器は計量器ではないため、これを用いて商品の体積を示して販売を行う際には、特定計量器を用いて体積を計量する必要がある。",
-                    "検定証印が付されていない特定計量器であっても、取引又は証明における法定計量単位による計量に使用してよい場合がある。"
-                ],
-                "正解": "5"
-            },
-            {
-                "問題番号": "問7",
-                "年度": "第59回(平成21年)",
-                "問題文": "<b>計量法第19条</b>の定期検査に関する次のア~オの記述のうち、正しいものがいくつあるか、次の1~5の中から一つ選べ。\n\nア <b>計量法第107条</b>の計量証明の事業の登録を受けた者が計量上の証明に使用する特定計量器は、定期検査を受けなければならない。\n\nイ 定期検査の合格条件の一つとして、その器差が経済産業省令で定める使用公差を超えないこと、がある。\n\nウ特定計量器のうち定期検査の対象となるものに分銅及びおもりがある。\n\nエ定期検査は、2年以上において特定計量器ごとに政令で定める期間に1回、区域ごとに行う。\n\nオ 都道府県知事又は特定市町村の長は、その指定する者(指定定期検査機関)に、定期検査を行わせることができる。",
-                "選択肢": [
-                    "1個",
-                    "2個",
-                    "3個",
-                    "4個",
-                    "5個"
-                ],
-                "正解": "3"
-            },
-            {
-                "問題番号": "問8",
-                "年度": "第59回(平成21年)",
-                "問題文": "次の記述のうち、<b>計量法第28条</b>の指定定期検査機関の指定の基準として誤っているものを一つ選べ。",
-                "選択肢": [
-                    "経済産業省令で定める条件に適合する知識経験を有する者が定期検査を実施し、その数が経済産業省令で定める数以上であること。",
-                    "指定定期検査機関の指定を取り消されたことがないこと。",
-                    "法人にあっては、その役員又は法人の種類に応じて経済産業省令で定める構成員の構成が定期検査の公正な実施に支障を及ぼすおそれがないものであること。",
-                    "検査業務を適確かつ円滑に行うに必要な経理的基礎を有するものであること。",
-                    "経済産業省令で定める器具、機械又は装置を用いて定期検査を行うものであること。"
-                ],
-                "正解": "2"
-            },
-            {
-                "問題番号": "問9",
-                "年度": "第59回(平成21年)",
-                "問題文": "<b>計量法第50条第1項</b>で規定する一定期間の経過後修理が必要となる特定計量器でないものを一つ選べ。",
-                "選択肢": [
-                    "ガスメーター",
-                    "最大需要電力計",
-                    "水道メーター",
-                    "積算熱量計",
-                    "照度計"
-                ],
-                "正解": "5"
-            },
-            {
-                "問題番号": "問10",
-                "年度": "第59回(平成21年)",
-                "問題文": "<b>計量法第53条第1項</b>の政令で定める特定計量器 (ヘルスメーター等の家庭用特定計量器)に関する次の記述のうち、誤っているものを一つ選べ。",
-                "選択肢": [
-                    "国内で当該特定計量器の製造の事業を行おうとする者(自己が取引又は証明における計量以外にのみ使用する特定計量器の製造の事業を行う者を除く。)は、都道府県知事を経由して経済産業大臣に届け出なければならない。",
-                    "都道府県知事に届け出なくても、当該特定計量器の販売の事業を行ってよい。",
-                    "国内で販売する目的で当該特定計量器を製造する際には、当該特定計量器が経済産業省省令で定める技術上の基準に適合するようにしなければならない。",
-                    "当該特定計量器の販売の事業を行う者は、経済産業省令で定める以下の表示又は検定証印等が付されているものでなければ、当該特定計量器を販売し、又は販売の目的で陳列してはならない。ただし、輸出のため当該特定計量器を販売する場合において、あらかじめ、都道府県知事に届け出たときは、この限りでない。",
-                    "当該特定計量器に経済産業省令で定める以下の表示が付されている場合、取引又は証明における法定計量単位による計量に使用することができる。(丸正マーク記載)"
-                ],
-                "正解": "5"
-            }
-        ];
-        // 解説データは提供されていないため、空のオブジェクトとして定義
-        let allExplanations = {}; 
+        let allQuizData = []; // JSONから読み込む全クイズデータ
+        let allExplanations = {}; // JSONから読み込む解説データ
         const NUMBER_OF_QUESTIONS_TO_ASK_RANDOM = 5; // ランダム出題時の問題数
 
         // クイズの状態を管理するオブジェクト
@@ -662,6 +540,31 @@
                 explanationContainer: 'explanation-container', explanationText: 'explanation-text'
             };
             return map[key] || key;
+        }
+
+        function loadQuizData() {
+            console.log("loadQuizData: Fetching quiz data...");
+            Promise.all([
+                fetch('problems.json').then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                }),
+                fetch('explanations.json').then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
+            ])
+            .then(([problemsData, explanationsData]) => {
+                allQuizData = problemsData;
+                allExplanations = explanationsData;
+                console.log("loadQuizData: Quiz and explanation data loaded successfully.");
+                initializeQuiz();
+            })
+            .catch(error => {
+                console.error('loadQuizData: Failed to load quiz data:', error);
+                if (domElements.quizContainer)
+                    domElements.quizContainer.innerHTML = `<p class="text-red-500">問題データの読み込みに失敗しました。ファイルを確認してください。</p>`;
+            });
         }
 
         function initializeQuiz() {
@@ -784,8 +687,18 @@
 
                     const previewTextSpan = document.createElement('span');
                     previewTextSpan.className = 'question-list-preview'; // Class for preview text
-                    let preview = question.問題文 ? question.問題文.substring(0, 50) + (question.問題文.length > 50 ? '...' : '') : (question.問題項目 ? '表形式問題' : '問題文なし');
-                    previewTextSpan.textContent = preview;
+                    
+                    // Get the raw problem text
+                    let rawProblemText = question.問題文 || (question.問題項目 ? '表形式問題' : '問題文なし');
+                    // Remove newlines for a single-line preview
+                    let singleLineText = rawProblemText.replace(/\n/g, ' ');
+                    // Truncate the text.
+                    let previewContent = singleLineText.substring(0, 50);
+                    if (singleLineText.length > 50) {
+                        previewContent += '...';
+                    }
+                    // Use innerHTML to render bold tags
+                    previewTextSpan.innerHTML = previewContent; // Changed from textContent to innerHTML
 
                     contentWrapper.appendChild(questionNumberSpan);
                     contentWrapper.appendChild(previewTextSpan);
@@ -1198,7 +1111,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             console.log("DOMContentLoaded: Page loaded. Caching DOM elements and loading quiz data.");
             cacheDOMElements();
-            initializeQuiz();
+            loadQuizData();
         });
     </script>
 
